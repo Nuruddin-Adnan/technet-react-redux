@@ -1,23 +1,24 @@
 import ProductReview from '@/components/ProductReview';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
+import { useGetSingleProductQuery } from '@/redux/api/apiSlice';
+import { addToCart } from '@/redux/features/cart/cartSlice';
+import { useAppDispatch } from '@/redux/hook';
 import { IProduct } from '@/types/globalTypes';
-import { useEffect, useState } from 'react';
+import { JSXElementConstructor, Key, ReactElement, ReactFragment } from 'react';
 import { useParams } from 'react-router-dom';
 
 export default function ProductDetails() {
   const { id } = useParams();
+  const { data: product } = useGetSingleProductQuery(id);
+  const dispatch = useAppDispatch();
 
-  //! Temporary code, should be replaced with redux
-  const [data, setData] = useState<IProduct[]>([]);
-  useEffect(() => {
-    fetch('../../public/data.json')
-      .then((res) => res.json())
-      .then((data) => setData(data));
-  }, []);
-
-  const product = data?.find((item) => item._id === Number(id));
-
-  //! Temporary code ends here
+  const handleAddProduct = (product: IProduct) => {
+    dispatch(addToCart(product));
+    toast({
+      description: 'Product Added',
+    });
+  };
 
   return (
     <>
@@ -29,11 +30,23 @@ export default function ProductDetails() {
           <h1 className="text-3xl font-semibold">{product?.name}</h1>
           <p className="text-xl">Rating: {product?.rating}</p>
           <ul className="space-y-1 text-lg">
-            {product?.features?.map((feature) => (
-              <li key={feature}>{feature}</li>
-            ))}
+            {product?.features?.map(
+              (
+                feature:
+                  | boolean
+                  | Key
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  | ReactElement<any, string | JSXElementConstructor<any>>
+                  | ReactFragment
+                  | null
+                  | undefined,
+                index: Key | null | undefined
+              ) => (
+                <li key={index}>{feature}</li>
+              )
+            )}
           </ul>
-          <Button>Add to cart</Button>
+          <Button onClick={() => handleAddProduct(product)}>Add to cart</Button>
         </div>
       </div>
       <ProductReview />

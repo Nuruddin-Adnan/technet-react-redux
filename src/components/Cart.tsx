@@ -23,12 +23,14 @@ import {
 export default function Cart() {
   const { products, total } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
+  const cart = useAppSelector((state) => state.cart);
 
   return (
     <Sheet>
       <SheetTrigger>
         <Button variant="ghost">
           <HiOutlineShoppingCart size="25" />
+          <span className="mt-[-20px]">{cart.products.length}</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-auto relative">
