@@ -1,8 +1,8 @@
 import ProductReview from '@/components/ProductReview';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
-import { useGetSingleProductQuery } from '@/redux/api/apiSlice';
 import { addToCart } from '@/redux/features/cart/cartSlice';
+import { useGetSingleProductQuery } from '@/redux/features/product/productApi';
 import { useAppDispatch } from '@/redux/hook';
 import { IProduct } from '@/types/globalTypes';
 import { JSXElementConstructor, Key, ReactElement, ReactFragment } from 'react';
@@ -49,7 +49,7 @@ export default function ProductDetails() {
           <Button onClick={() => handleAddProduct(product)}>Add to cart</Button>
         </div>
       </div>
-      <ProductReview />
+      <ProductReview id={id as string} />
     </>
   );
 }
